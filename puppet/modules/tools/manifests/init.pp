@@ -1,7 +1,3 @@
-#Exec {
-#    path => ["/bin/", "/sbin/", "/usr/bin/", "/usr/sbin/"]
-#}
-
 class tools {
 
     package { ["tar"]:
@@ -11,9 +7,9 @@ class tools {
     package { ["unzip"]:
             ensure => installed,         
     }
-
-    package { 'subversion' :
-        ensure => 'latest',
+    
+    package { ["openjdk-7-jre-headless"]:
+            ensure => installed,             
     }
 
     package { 'git-core' :

@@ -8,46 +8,36 @@ class tomcat {
     $nexus = 'http://maven.apps.local:8082/nexus/content/repositories/releases/org/apache/tomcat'
     $tomcatURL = "$nexus/apache-tomcat/$tomcatVersion/apache-tomcat-$tomcatVersion.tar.gz"
 
-    #Tomcat User
-        group {'tomcat':
-            ensure  => present,
-            gid     => 500,
+    #Tomcat User & Group
+        user { "tomcat" :
+            managehome => true,
+            ensure     => present,
         }
 
-        user {'tomcat_usr':
-            ensure      => present,
-            uid         => 500,
-            home        => "/home/tomcat",
-            require     => Group['tomcat'],
-        }
-
-    #Set Tomcat Directories
+    #Set Tomcat Directories & Links
         file { '/opt/tomcat':
             ensure  => 'directory',
-            owner   => 'tomcat_usr',
+            owner   => 'tomcat',
             group   => 'tomcat',
-            recurse => true,
             mode    => '750',
         }	
 
         file { '/var/log/tomcat':
             ensure  => 'directory',
-            owner   => 'tomcat_usr',
+            owner   => 'tomcat',
             group   => 'tomcat',
-            recurse => true,
             mode    => '750',
         }
 
         file { "/var/log/tomcat/$serviceName$appName":
             ensure  => 'directory',
-            owner   => 'tomcat_usr',
+            owner   => 'tomcat',
             group   => 'tomcat',
-            recurse => true,
             mode    => '770',
             require => File['/var/log/tomcat'],
         }
 
-        file { '/var/tomcat/logs':
+        file { '/opt/tomcat/logs':
             ensure => 'link',
             target => '/var/log/tomcat',
             require => [File['/var/log/tomcat'], File['/opt/tomcat']],
@@ -64,16 +54,4 @@ class tomcat {
             require => [Exec['download-tomcat'],File['/opt/tomcat']],
         }
 }  
-
-#    #Hosts File Entries
-#        class hostsDev { 
-#            host { 'testnode':
-#                ip => '192.168.33.21',
-#                host_aliases => [ 'testnode.prod.williamhill.co.uk' ],
-#            }
-#        }
-
-#        case $deploymentEnvironment {
-#            'testnode': { include 'hostsDev' }
-#        }
       
