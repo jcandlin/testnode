@@ -3,5 +3,7 @@ Exec {
 }
 
 node testnode {
-    include tomcat7
+	include bootstrap
+    include tomcat
+    include tools
 }
